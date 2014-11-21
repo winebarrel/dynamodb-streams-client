@@ -113,10 +113,12 @@ class DynamoDB::Streams::Client
 
     if res_code != 200 or __type
       errmsg = if __type
+                 res_data_msg = res_data['message'] || res_data['Message'] || __type
+
                  if @debug
-                   "#{__type}: #{res_data['message'] || res_data['Message']}"
+                   "#{__type}: #{res_data_msg}"
                  else
-                   "#{res_data['message'] || res_data['Message']}"
+                   "#{res_data_msg}"
                  end
                else
                  "#{res_code} #{res_msg}"

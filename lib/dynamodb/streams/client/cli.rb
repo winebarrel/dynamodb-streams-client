@@ -26,6 +26,23 @@ class DynamoDB::Streams::Client::CLI < Thor
     puts JSON.pretty_generate(res_data)
   end
 
+  desc 'get_shard_iterator STREAM_ID SHARD_ID SHARD_ITERATOR_TYPE', 'Returns information about a stream'
+  option 'sequence-number'
+  def get_shard_iterator(stream_id, shard_id, shard_iterator_type)
+    req_hash = {
+      'StreamId'          => stream_id,
+      'ShardId'           => shard_id,
+      'ShardIteratorType' => shard_iterator_type.upcase,
+    }
+
+    if seq_num = options['sequence-number']
+      req_hash['SequenceNumber'] = seq_num
+    end
+
+    res_data = client.query('GetShardIterator', req_hash)
+    puts JSON.pretty_generate(res_data)
+  end
+
   no_commands do
     def iterate(item, req_hash = {})
       res_data = {}

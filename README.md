@@ -54,6 +54,7 @@ Options:
   -s, [--secret-key=SECRET-KEY]
   -e, [--endpoint=ENDPOINT]
   -r, [--region=REGION]
+      [--debug=DEBUG]
 ```
 
 ### Follow record

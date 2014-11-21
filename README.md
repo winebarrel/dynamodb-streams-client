@@ -37,3 +37,27 @@ pp client.query('ListStreams')
 #      "...",
 #      "..."]}
 ```
+
+## CLI
+
+```sh
+$ dynamodb-streams
+Commands:
+  dynamodb-streams describe_stream STREAM_ID                                  # Returns information about a stream
+  dynamodb-streams get_records SHARD_ITERATOR                                 # Retrieves the stream records
+  dynamodb-streams get_shard_iterator STREAM_ID SHARD_ID SHARD_ITERATOR_TYPE  # Returns a shard iterator
+  dynamodb-streams help [COMMAND]                                             # Describe available commands or one specific command
+  dynamodb-streams list_streams                                               # Returns an array of stream IDs
+
+Options:
+  -k, [--access-key=ACCESS-KEY]
+  -s, [--secret-key=SECRET-KEY]
+  -e, [--endpoint=ENDPOINT]
+  -r, [--region=REGION]
+```
+
+### Follow record
+
+```sh
+dynamodb-streams get_records xxxxxxxx-xxxx-... -f --limit 10
+```

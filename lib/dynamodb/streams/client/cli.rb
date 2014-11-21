@@ -8,27 +8,46 @@ class DynamoDB::Streams::Client::CLI < Thor
 
   desc 'list_streams', 'Returns an array of stream IDs'
   def list_streams
-    req_hash = {}
-    res_data = {}
-
-    list = lambda do |last_evaluated_stream_id|
-      req_hash['ExclusiveStartStreamId'] = last_evaluated_stream_id if last_evaluated_stream_id
-      resp = client.query('ListStreams', req_hash)
-      res_data.deep_merge!(resp)
-      req_hash['LastEvaluatedStreamId']
+    res_data = iterate('StreamId') do |rh|
+      client.query('ListStreams', rh)
     end
 
-    lesi = nil
+    puts JSON.pretty_generate(res_data)
+  end
 
-    loop do
-      lesi = list.call(lesi)
-      break unless lesi
+  desc 'describe_stream STREAM_ID', 'Returns information about a stream'
+  def describe_stream(stream_id)
+    req_hash = {'StreamId' => stream_id}
+
+    res_data = iterate('ShardId', req_hash) do |rh|
+      client.query('DescribeStream', rh)
     end
 
     puts JSON.pretty_generate(res_data)
   end
 
   no_commands do
+    def iterate(item, req_hash = {})
+      res_data = {}
+
+      list = proc do |last_evaluated|
+        req_hash["ExclusiveStart#{item}"] = last_evaluated if last_evaluated
+        resp = yield(req_hash)
+        res_data.deep_merge!(resp)
+        resp["LastEvaluated#{item}"]
+      end
+
+      le = nil
+
+      loop do
+        le = list.call(le)
+        break unless le
+      end
+
+      res_data.delete("LastEvaluated#{item}")
+      res_data
+    end
+
     def client
       return @client if @client
 

@@ -7,6 +7,7 @@ class DynamoDB::Streams::Client::CLI < Thor
   class_option 'secret-key', :aliases => '-s'
   class_option 'endpoint',   :aliases => '-e'
   class_option 'region',     :aliases => '-r'
+  class_option 'debug'
 
   desc 'list_streams', 'Returns an array of stream IDs'
   def list_streams
@@ -98,6 +99,8 @@ class DynamoDB::Streams::Client::CLI < Thor
       }
 
       @client = DynamoDB::Streams::Client.new(client_options)
+      @client.debug = true if options['debug']
+      @client
     end
   end
 end

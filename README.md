@@ -21,6 +21,9 @@ Or install it yourself as:
 ## Usage
 
 ```ruby
+require 'dynamodb/streams/client'
+require 'pp'
+
 client = DynamoDB::Streams::Client.new(
   access_key_id: 'YOUR_ACCESS_KEY_ID',
   secret_access_key: 'YOUR_SECRET_ACCESS_KEY',

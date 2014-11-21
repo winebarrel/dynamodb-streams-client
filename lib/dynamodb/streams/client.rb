@@ -7,7 +7,10 @@ require 'stringio'
 require 'zlib'
 require 'uri'
 
+require 'thor'
+
 require 'dynamodb/streams/client/version'
+require 'dynamodb/streams/client/cli'
 
 class DynamoDB::Streams::Client
   class Error < StandardError

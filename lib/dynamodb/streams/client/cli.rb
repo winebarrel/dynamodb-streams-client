@@ -1,6 +1,8 @@
 require 'deep_merge'
 
 class DynamoDB::Streams::Client::CLI < Thor
+  ITOR_WAIT = 0.3
+
   class_option 'access-key', :aliases => '-k'
   class_option 'secret-key', :aliases => '-s'
   class_option 'endpoint',   :aliases => '-e'
@@ -26,7 +28,7 @@ class DynamoDB::Streams::Client::CLI < Thor
     puts JSON.pretty_generate(res_data)
   end
 
-  desc 'get_shard_iterator STREAM_ID SHARD_ID SHARD_ITERATOR_TYPE', 'Returns information about a stream'
+  desc 'get_shard_iterator STREAM_ID SHARD_ID SHARD_ITERATOR_TYPE', 'Returns a shard iterator'
   option 'sequence-number'
   def get_shard_iterator(stream_id, shard_id, shard_iterator_type)
     req_hash = {
@@ -41,6 +43,26 @@ class DynamoDB::Streams::Client::CLI < Thor
 
     res_data = client.query('GetShardIterator', req_hash)
     puts JSON.pretty_generate(res_data)
+  end
+
+  desc 'get_records SHARD_ITERATOR', 'Retrieves the stream records'
+  option 'limit', :type => :numeric
+  option 'follow', :aliases => '-f'
+  def get_records(shard_iterator)
+    req_hash = {'ShardIterator' => shard_iterator}
+    req_hash['Limit'] = options['limit'] if options['limit']
+
+    loop do
+      res_data = client.query('GetRecords', req_hash)
+      puts JSON.pretty_generate(res_data)
+      next_shard_iterator = res_data['NextShardIterator']
+
+      unless options['follow'] and next_shard_iterator
+        break
+      end
+
+      req_hash['ShardIterator'] = next_shard_iterator
+    end
   end
 
   no_commands do

@@ -34,7 +34,12 @@ class DynamoDB::Streams::Client
     @accessKeyId = options.fetch(:access_key_id)
     @secretAccessKey = options.fetch(:secret_access_key)
     @endpoint = URI.parse(options.fetch(:endpoint))
-    @region = options[:region] || /([^.]+)\.amazonaws\.com\z/.match(@endpoint.host)[1]
+    @region = options[:region]
+
+    unless @region or @region = (/([^.]+)\.amazonaws\.com\z/.match(@endpoint.host) || [])[1]
+      @region = [@endpoint.host, @endpoint.port].join(':')
+    end
+
     @timeout = DEFAULT_TIMEOUT
     @debug = false
     @retry_num = 3

@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ['sgwr_dts@yahoo.co.jp']
   spec.summary       = %q{DynamoDB Streams client.}
   spec.description   = %q{DynamoDB Streams client.}
-  spec.homepage      = ''
+  spec.homepage      = 'https://github.com/winebarrel/dynamodb-streams-client'
   spec.license       = 'MIT'
 
   spec.files         = `git ls-files -z`.split("\x0")

@@ -55,6 +55,15 @@ Options:
   -e, [--endpoint=ENDPOINT]
   -r, [--region=REGION]
       [--debug=DEBUG]
+
+$ export AWS_ACCESS_KEY_ID=...
+$ export AWS_SECRET_ACCESS_KEY=...
+$ export DYNAMODB_STREAMS_ENDPOINT=...
+
+$ dynamodb-streams list_streams
+{
+  "StreamIds": [
+    "...",
 ```
 
 ### Follow record
